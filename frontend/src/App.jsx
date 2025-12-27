@@ -26,10 +26,27 @@ function App() {
             <ToastContainer position="top-right" autoClose={3000} />
             <Router>
                 <Routes>
+                    {/* [Public Routest] */}
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    
+                    {/* [Admin Routes. ] */}
+                    <Route
+                        path="/admin"
+                        element={
+                            <ProtectedRoute role="admin">
+                                <AdminDashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/genres"
+                        element={
+                            <ProtectedRoute role="admin">
+                                <GenresManagement />
+                            </ProtectedRoute>
+                        }
+                    />
                 </Routes>
             </Router>
         </>
