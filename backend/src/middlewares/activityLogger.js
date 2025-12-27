@@ -5,7 +5,6 @@ const LOG_PATH = path.join(__dirname, '../../logs/activity.log');
 
 function sanitizeBody(body) {
     if (!body || typeof body !== 'object') return body;
-    // shallow copy and redact common sensitive fields
     const copy = { ...body };
     const sensitive = ['password', 'oldPassword', 'newPassword', 'token', 'authorization'];
     for (const key of sensitive) {
@@ -19,8 +18,6 @@ const activityLogger = (req, res, next) => {
 
     const { method, originalUrl: url, ip, headers } = req;
     const userAgent = headers['user-agent'] || '';
-
-    // capture request data (sanitized)
     const requestSnapshot = {
         body: sanitizeBody(req.body),
         params: req.params,
@@ -45,12 +42,9 @@ const activityLogger = (req, res, next) => {
             };
 
             const line = JSON.stringify(entry) + '\n';
-
-            // ensure log directory exists
             fs.mkdirSync(path.dirname(LOG_PATH), { recursive: true });
             fs.appendFile(LOG_PATH, line, (err) => {
                 if (err) {
-                    // don't break the request flow for logging errors
                     console.error('Failed to write activity log:', err);
                 }
             });
