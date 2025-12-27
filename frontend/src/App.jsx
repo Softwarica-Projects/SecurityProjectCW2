@@ -40,6 +40,10 @@ function App() {
                             <FavMoviePage />
                         </ProtectedRoute>} />
 
+                    <Route path="/profile" element={
+                        <ProtectedRoute role="admin,user">
+                            <ProfilePage />
+                        </ProtectedRoute>} />
                     {/* [Admin Routes. ] */}
                     <Route
                         path="/admin"

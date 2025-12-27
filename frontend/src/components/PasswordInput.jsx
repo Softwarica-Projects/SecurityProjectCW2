@@ -14,7 +14,9 @@ const StrengthBar = ({ score }) => {
 };
 
 const PasswordInput = React.forwardRef(({ label = 'Password', name='password', onChange, value, error, registerOptions }, ref) => {
+    // Support both controlled (value provided) and uncontrolled (react-hook-form) usages.
     const [internalValue, setInternalValue] = useState(value ?? '');
+
     useEffect(() => {
         if (value !== undefined) setInternalValue(value || '');
     }, [value]);
