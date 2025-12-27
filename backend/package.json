@@ -12,6 +12,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express-requests-logger": "^1.0.6",
+    "express-xss-sanitizer": "^1.0.6",
     "express": "^4.17.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.3",
