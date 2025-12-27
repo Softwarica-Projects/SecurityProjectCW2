@@ -1,0 +1,27 @@
+@use "bootstrap/scss/bootstrap" as *;
+
+$primary: #0991B1;
+
+.primary-chip {
+    background-color: $primary;
+}
+
+.accordion-item {
+    background-color: transparent !important; 
+    border: none; 
+}
+
+.accordion-header {
+    background-color: transparent !important; 
+    color: #fff;
+}
+
+.accordion-body {
+    background-color: transparent !important;
+    color: #fff;
+}
+
+.navbar {
+    background-color: #212529 !important;
+}
+
