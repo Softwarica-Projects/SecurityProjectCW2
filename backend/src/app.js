@@ -24,6 +24,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
+//Xss Sanitizer Setup
+const xssSanitizer = require('./middlewares/xssSanitizer');
+app.use(xssSanitizer());
+
 //Request Logger Setup 
 const fs = require('fs');
 const bunyan = require('bunyan');
