@@ -27,6 +27,17 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
+//CSP Setup
+const helmet = require('helmet');
+const { cspConfig } = require('./config/cspConfig');
+app.use(helmet({ crossOriginEmbedderPolicy: false, crossOriginResourcePolicy: { policy: 'same-site' } }));
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: cspConfig,
+    })
+);
+
+
 //Xss Sanitizer Setup
 const xssSanitizer = require('./middlewares/xssSanitizer');
 app.use(xssSanitizer());
