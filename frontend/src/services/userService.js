@@ -8,7 +8,6 @@ export const encryptString = async (plain) => {
                 const saltEnv = process.env.REACT_APP_ENCRYPTION_SALT;
                 let salt;
                 if (saltEnv) {
-                    // decode base64 salt into Uint8Array
                     const raw = typeof atob === 'function' ? atob(saltEnv) : Buffer.from(saltEnv, 'base64').toString('binary');
                     const arr = new Uint8Array(raw.length);
                     for (let i = 0; i < raw.length; ++i) arr[i] = raw.charCodeAt(i);
