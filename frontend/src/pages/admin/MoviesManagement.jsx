@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Container, Modal, Table } from 'react-bootstrap';
+import { Button, Container, Modal, Dropdown } from 'react-bootstrap';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { CiEdit } from 'react-icons/ci';
@@ -48,100 +48,92 @@ const MoviesManagement = () => {
     };
     return (
         <AdminLayout>
-            <Container>
-                <h3 className="my-4 d-flex align-items-center justify-content-between">
-                    Manage Movies
-                    <Link to="/admin/movies/create" >
-                        <Button variant="primary">
-                            Add New Movie
-                        </Button>
+            <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-semibold">Manage Movies</h3>
+                    <Link to="/admin/movies/create">
+                        <Button variant="primary">Add New Movie</Button>
                     </Link>
-                </h3>
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th>Title</th>
-                            <th>Release Date</th>
-                            <th>Average Rating</th>
-                            <th>Genre</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {movies.map(movie => (
-                            <tr key={movie._id}>
-                                <td>
+                </div>
+
+                <div className="space-y-3">
+                    {movies.map(movie => (
+                        <div key={movie._id} className="bg-white shadow-sm rounded-lg">
+                            <div className="flex items-center gap-4 p-3">
+                                <div className="w-20 h-20 flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
                                     {movie.coverImage ? (
-                                        <img
-                                            src={movie.coverImage}
-                                            alt={movie.title}
-                                            style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
-                                        />
+                                        // eslint-disable-next-line
+                                        <img src={movie.coverImage} alt={`cover ${movie.title}`} className="w-full h-full object-cover" />
                                     ) : (
-                                        <span style={{ color: '#adb5bd' }}>No Image</span>
+                                        <div className="w-full h-full flex items-center justify-center text-sm text-gray-400">No Image</div>
                                     )}
-                                </td>
-                                <td>{movie.title}</td>
-                                <td>{movie.releaseDate ? new Date(movie.releaseDate).toLocaleDateString() : ''}</td>
-                                <td>{movie.averageRating?.toFixed(2) ?? '-'}</td>
-                                <td>
-                                    <div style={{ maxWidth: 180, overflowX: 'auto', whiteSpace: 'nowrap' }}>
-                                        {movie.genre}
+                                </div>
+
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between">
+                                        <div className="truncate">
+                                            <div className="text-lg font-semibold truncate">{movie.title}</div>
+                                            <div className="text-sm text-gray-500">{movie.releaseDate ? new Date(movie.releaseDate).toLocaleDateString() : ''}</div>
+                                        </div>
+                                        <div className="ml-4 flex-shrink-0">
+                                            <Dropdown align="end" drop="down" renderMenuOnMount popperConfig={{ strategy: 'fixed' }} container={typeof document !== 'undefined' ? document.body : undefined}>
+                                                <Dropdown.Toggle variant="light" id={`dropdown-${movie._id}`} className="p-1 rounded">
+                                                   
+                                                </Dropdown.Toggle>
+
+                                                <Dropdown.Menu className="!z-50">
+                                                    <Dropdown.Item as={Link} to={`/admin/movies/update/${movie._id}`}>
+                                                        Edit
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item onClick={() => handleDelete(movie._id)}>
+                                                        Delete
+                                                    </Dropdown.Item>
+                                                    <Dropdown.Item onClick={async () => {
+                                                        try {
+                                                            await toggleFeatured(movie._id);
+                                                            handleSuccess(
+                                                                movie.featured
+                                                                    ? 'Movie removed from featured!'
+                                                                    : 'Movie marked as featured!'
+                                                            );
+                                                            fetchMovies();
+                                                        } catch (err) {
+                                                            handleError(err, 'Failed to toggle featured');
+                                                        }
+                                                    }}>
+                                                     {movie.featured ? 'Unmark Featured' : 'Mark Featured'}
+                                                    </Dropdown.Item>
+                                                </Dropdown.Menu>
+                                            </Dropdown>
+                                        </div>
                                     </div>
-                                </td>
-                                <td>
-                                    <Link to={`/admin/movies/update/${movie._id}`}>
-                                        <span
-                                            style={{ cursor: 'pointer', color: '#ffc107', marginRight: 16 }}
-                                            title="Edit"
-                                        >
-                                            <CiEdit size={20} />
-                                        </span>
-                                    </Link>
-                                    <span
-                                        style={{ cursor: 'pointer', color: '#dc3545', marginRight: 16 }}
-                                        title="Delete"
-                                        onClick={() => handleDelete(movie._id)}
-                                    >
-                                        <FaTrash size={20} />
-                                    </span>
-                                    <span
-                                        style={{ cursor: 'pointer', color: movie.featured ? '#ffc107' : '#adb5bd' }}
-                                        title={movie.featured ? 'Unmark as Featured' : 'Mark as Featured'}
-                                        onClick={async () => {
-                                            try {
-                                                await toggleFeatured(movie._id);
-                                                handleSuccess(
-                                                    movie.featured
-                                                        ? 'Movie removed from featured!'
-                                                        : 'Movie marked as featured!'
-                                                );
-                                                fetchMovies();
-                                            } catch (err) {
-                                                handleError(err, 'Failed to toggle featured');
-                                            }
-                                        }}
-                                    >
-                                        {movie.featured ? <FaStar size={20} /> : <FaRegStar size={20} />}
-                                    </span>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
+
+                                    <div className="mt-2 flex items-center justify-between gap-4">
+                                        <div className="text-sm text-gray-600">Rating: <span className="font-semibold">{movie.averageRating?.toFixed(2) ?? '-'}</span></div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {Array.isArray(movie.genre) ? movie.genre.map(g => (
+                                                <span key={g} className="text-xs bg-slate-100 text-slate-800 px-2 py-1 rounded">{g}</span>
+                                            )) : (
+                                                <span className="text-xs bg-slate-100 text-slate-800 px-2 py-1 rounded">{movie.genre}</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
 
                 <Modal show={showModal} onHide={() => setShowModal(false)}>
                     <Modal.Header closeButton>
                         <Modal.Title>Add New Movie</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <MovieForm></MovieForm>
-
+                        <MovieForm />
                     </Modal.Body>
                 </Modal>
-            </Container>
-        </AdminLayout >
+            </div>
+        </AdminLayout>
     );
 };
 

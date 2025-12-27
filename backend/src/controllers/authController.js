@@ -1,6 +1,4 @@
 const AuthService = require('../services/AuthService');
-const nodemailer = require('nodemailer');
-
 function tryDecodeBase64(value) {
     if (!value || typeof value !== 'string') return value;
     try {
@@ -137,6 +135,15 @@ class AuthController {
         }
     }
 
+    async getFavoriteMovies(req, res, next) {
+        try {
+            const favorites = await this.authService.getFavoriteMovies(req.user.id);
+            res.status(200).json(favorites);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getMe(req, res, next) {
         try {
             const basePath = `${req.protocol}://${req.get('host')}`;
@@ -156,6 +163,27 @@ class AuthController {
         }
     }
 
+    async updateProfile(req, res, next) {
+        try {
+            const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+            const result = await this.authService.updateUserProfile(req.user.id, req.body, imagePath);
+            res.status(200).json({
+                success: true,
+                message: result.message
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getUserStats(req, res, next) {
+        try {
+            const stats = await this.authService.getUserStats(req.user.id);
+            res.status(200).json(stats);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 const authController = new AuthController();
@@ -165,5 +193,8 @@ module.exports = {
     loginUser: authController.loginUser.bind(authController),
     loginAdmin: authController.loginAdmin.bind(authController),
     changePassword: authController.changePassword.bind(authController),
+    getFavoriteMovies: authController.getFavoriteMovies.bind(authController),
     getMe: authController.getMe.bind(authController),
+    updateProfile: authController.updateProfile.bind(authController),
+    getUserStats: authController.getUserStats.bind(authController)
 };

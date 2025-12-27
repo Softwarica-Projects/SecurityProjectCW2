@@ -1,4 +1,4 @@
-import { Container, Nav, Navbar } from 'react-bootstrap';
+import { Container, Nav, Navbar, Dropdown } from 'react-bootstrap';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
@@ -20,33 +20,22 @@ const AdminLayout = ({ children }) => {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-      <div
-        style={{
-          width: '220px',
-          backgroundColor: '#212529',
-          padding: '20px 0',
-          flexShrink: 0,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <h4 className="text-white text-center mb-4">MovieVault</h4>
-        <nav>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+    <div className="flex h-screen bg-gray-50">
+      <aside className="w-56 bg-slate-900 text-slate-200 flex flex-col p-4">
+        <div className="mb-6">
+            <Link to="/admin/" className="flex items-center gap-3">
+            <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-primary-600 to-teal-400 text-white font-bold">MV</span>
+            <span className="text-lg font-semibold">MovieVault</span>
+          </Link>
+        </div>
+
+        <nav className="flex-1">
+          <ul className="space-y-2">
             {menuItems.map((item) => (
               <li key={item.path}>
                 <Link
                   to={item.path}
-                  className="d-block px-4 py-2 mb-2"
-                  style={{
-                    color: location.pathname === item.path ? '#fff' : '#adb5bd',
-                    background: location.pathname === item.path ? '#343a40' : 'transparent',
-                    borderRadius: '6px',
-                    textDecoration: 'none',
-                    fontWeight: 500,
-                    transition: 'background 0.2s',
-                  }}
+                  className={`block px-3 py-2 rounded-md font-medium ${location.pathname === item.path ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800'}`}
                 >
                   {item.label}
                 </Link>
@@ -54,33 +43,26 @@ const AdminLayout = ({ children }) => {
             ))}
           </ul>
         </nav>
-      </div>
+      </aside>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div className="flex-1 flex flex-col overflow-visible">
+        <header className="flex items-center justify-between px-6 py-3 border-b bg-white">
+          <div>
+            <h4 className="text-lg font-semibold">{userName || 'Admin'}</h4>
+          </div>
+          <div className="flex items-center gap-4">
+            <Dropdown align="end">
+                <Dropdown.Toggle id="admin-avatar-toggle" className="p-0 bg-transparent border-0">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-teal-400 to-primary-600 text-white flex items-center justify-center font-semibold">{(userName || 'A').charAt(0)}</div>
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        </header>
 
-        <Navbar variant="dark" expand="lg" style={{ backgroundColor: '#212529', flexShrink: 0 }}>
-          <Container fluid>
-            <Navbar.Brand>{userName || 'Admin Dashboard'}</Navbar.Brand>
-            <Nav className="ms-auto">
-              <Nav.Link href="/" className="text-white">
-                Home
-              </Nav.Link>
-              <Nav.Link onClick={handleLogout} className="text-white" style={{ cursor: 'pointer' }}>
-                Logout
-              </Nav.Link>
-            </Nav>
-          </Container>
-        </Navbar>
-        <div
-          style={{
-            flex: 1,
-            overflowY: 'auto',
-            padding: '20px',
-            backgroundColor: '#f8f9fa',
-          }}
-        >
-          {children}
-        </div>
+        <main className="p-6 overflow-auto">{children}</main>
       </div>
     </div>
   );
