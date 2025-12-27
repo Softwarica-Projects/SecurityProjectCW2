@@ -27,6 +27,10 @@ app.options('*', cors(corsOptions));
 //Xss Sanitizer Setup
 const xssSanitizer = require('./middlewares/xssSanitizer');
 app.use(xssSanitizer());
+//Mongo Sanitize Setup
+const mongoSanitize = require('./middlewares/mongoSanitize');
+app.use(mongoSanitize());
+
 
 //Request Logger Setup 
 const fs = require('fs');
