@@ -5,8 +5,26 @@ const connectDB = require('./config/db');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-//Request Logger Setup 
 
+//CORS SETUP
+const cors = require('cors');
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            return callback(null, true);
+        }
+        return callback(new Error('CORS policy: This origin is not allowed'));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    exposedHeaders: ['Authorization']
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
+//Request Logger Setup 
 const fs = require('fs');
 const bunyan = require('bunyan');
 const expressRequestsLogger = require('express-requests-logger');
