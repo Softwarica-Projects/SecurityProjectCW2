@@ -65,6 +65,9 @@ app.use(expressRequestsLogger({
 // Serve uploads folder statically
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+//Routes
+app.use('/api/auth', authRoutes);
+
 const errorHandler = require('./middlewares/errorHandler');
 app.use(errorHandler);
 // Database connection
