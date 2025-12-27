@@ -39,6 +39,14 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
+                    <Route
+                        path="/admin/genres"
+                        element={
+                            <ProtectedRoute role="admin">
+                                <GenresManagement />
+                            </ProtectedRoute>
+                        }
+                    />
                 </Routes>
             </Router>
         </>
