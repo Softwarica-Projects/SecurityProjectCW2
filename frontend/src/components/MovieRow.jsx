@@ -19,13 +19,13 @@ const MovieRow = ({ title, movies, rowID, showRating = true }) => {
 
   return (
       <div>
-        <div className="flex flex-row items-center">
-          <h2 className="text-[#FFFDE3] font-bold md:text-xl p-4 cursor-pointer">{title}</h2>
+        <div className="flex flex-row items-center justify-between px-4">
+          <h2 className="text-primary-600 font-bold md:text-2xl py-3 cursor-pointer">{title}</h2>
         </div>
         <div className="relative flex items-center ml-2 group">
           <MdChevronLeft
-            className='bg-white rounded-full left-0 absolute opacity-50 hover:opacity-100 cursor-pointer z-10 hidden group-hover:block'
-            size={30}
+            className='bg-primary-600 text-white rounded-full left-2 absolute opacity-90 hover:opacity-100 cursor-pointer z-10 hidden group-hover:block'
+            size={36}
             onClick={slideLeft}
           />
           <div id={'slider' + rowID} className='w-full h-full overflow-x-scroll whitespace-nowrap scroll-smooth scrollbar-hide relative break-words'>
@@ -36,8 +36,8 @@ const MovieRow = ({ title, movies, rowID, showRating = true }) => {
             })}
           </div>
           <MdChevronRight
-            className='bg-white rounded-full right-0 absolute opacity-50 hover:opacity-100 cursor-pointer z-10 hidden group-hover:block'
-            size={30}
+            className='bg-primary-600 text-white rounded-full right-2 absolute opacity-90 hover:opacity-100 cursor-pointer z-10 hidden group-hover:block'
+            size={36}
             onClick={slideRight}
           />
         </div>

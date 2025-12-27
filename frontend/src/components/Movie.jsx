@@ -12,35 +12,26 @@ const Movie = ({ movie, showRating = true }) => {
     navigate(`/movies/${movie._id}`)
   }
   return (
-    <div className="w-[180px] sm:w-[250px] md:w-[320px] lg:w-[320px] xl:w-[280px] h-[270px] sm:h-[375px] md:h-[480px] lg:h-[480px] xl:h-[420px] inline-block cursor-pointer relative p-4 z-0">
-      <img
-        className="w-full h-full hover:opacity-50 rounded object-cover"
-        src={getImageUrl(movie.coverImage)}
-        alt={movie.title || "Movie poster"}
-        onClick={handleClick}
-      />
-      <div onClick={handleClick} className="absolute top-0 left-0 w-full h-full bg-black/40 hover:opacity-100 text-white px-5">
-        {movie.isPurchased && (<div className="absolute top-8 left-8"><Tag color="bg-primary-600">Purchased</Tag></div>)}
-        <div className="absolute top-8 right-8">
-          {showRating ? (
-            <div className="flex flex-row justify-center items-center text-orange-400">
-              <AiFillStar />
-              <p className="text-xs md:text-base font-bold">{movie.averageRating?.toFixed(2)} </p>
+    <div className="relative inline-block cursor-pointer p-3">
+      <div className="overflow-hidden rounded-lg shadow group" onClick={handleClick}>
+        <img className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-300" src={getImageUrl(movie.coverImage)} alt={movie.title || "Movie poster"} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
+          <div className="flex items-center justify-between">
+            <div className="text-white font-semibold text-lg truncate">{movie.title}</div>
+            <div className="text-white text-sm flex items-center gap-2">
+              <AiFillStar className="text-yellow-400" />
+              <span className="font-bold">{movie.averageRating?.toFixed(2) ?? '-'}</span>
             </div>
-          ) : (
-            <div className="primary-chip px-2 py-1 rounded-full">
-              <p className="text-xs md:text-sm font-medium text-white">
-                {new Date(movie.releaseDate).toLocaleDateString('en-GB', {
-                  day: '2-digit',
-                  month: 'short',
-                  year: 'numeric'
-                }).replace(/\//g, ' ').replace(/(\d{2}) (\d{2}) (\d{4})/, '$1 $2, $3')}
-              </p>
+          </div>
+          <div className="mt-2 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {movie.isPurchased && <Tag color="bg-primary-600">Purchased</Tag>}
+              <div className="text-sm text-white/80">{movie.genre?.name}</div>
             </div>
-          )}
-        </div>
-        <div className="flex flex-row justify-center items-center absolute bottom-8 left-8 right-8">
-          <p className="text-base md:text-lg font-medium truncate">{movie.title}</p>
+            <div>
+              <button className="bg-primary-600 text-white px-3 py-1 rounded-md text-sm">Watch</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
