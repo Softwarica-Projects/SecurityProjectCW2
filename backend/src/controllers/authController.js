@@ -1,13 +1,26 @@
 const AuthService = require('../services/AuthService');
-function tryDecodeBase64(value) {
+const crypto = require('crypto');
+
+function tryDecrypt(value) {
     if (!value || typeof value !== 'string') return value;
     try {
-        const maybe = value.replace(/\s+/g, '');
-        if (maybe.length % 4 !== 0) return value;
-        const buff = Buffer.from(maybe, 'base64');
-        const decoded = buff.toString('utf8');
-        if (Buffer.from(decoded).toString('base64') === maybe) return decoded;
-        return value;
+        const combined = Buffer.from(value, 'base64');
+        if (combined.length < 13) return value;
+        const iv = combined.slice(0, 12);
+        const ciphertext = combined.slice(12);
+        const passphrase = process.env.ENCRYPTION_PASSPHRASE;
+        if (!passphrase) return value;
+        const saltEnv = process.env.ENCRYPTION_SALT;
+        const salt = saltEnv ? Buffer.from(saltEnv, 'base64') : Buffer.from('static-salt-please-change');
+        const key = crypto.pbkdf2Sync(passphrase, salt, 100000, 32, 'sha256');
+        const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+        if (ciphertext.length < 16) return value;
+        const tag = ciphertext.slice(ciphertext.length - 16);
+        const encText = ciphertext.slice(0, ciphertext.length - 16);
+        decipher.setAuthTag(tag);
+        let decrypted = decipher.update(encText, undefined, 'utf8');
+        decrypted += decipher.final('utf8');
+        return decrypted;
     } catch (e) {
         return value;
     }
@@ -59,7 +72,7 @@ class AuthController {
     async registerUser(req, res, next) {
         try {
             const body = { ...req.body };
-            if (body.password) body.password = tryDecodeBase64(body.password);
+            if (body.password) body.password = tryDecrypt(body.password);
             const recaptchaSecret = process.env.RECAPTCHA_SECRET;
             if (recaptchaSecret) {
                 const ok = await verifyRecaptchaToken(body.recaptchaToken, recaptchaSecret);
@@ -82,7 +95,7 @@ class AuthController {
     async loginUser(req, res, next) {
         try {
             const body = { ...req.body };
-            if (body.password) body.password = tryDecodeBase64(body.password);
+            if (body.password) body.password = tryDecrypt(body.password);
             const recaptchaSecret = process.env.RECAPTCHA_SECRET;
             if (recaptchaSecret) {
                 const ok = await verifyRecaptchaToken(body.recaptchaToken, recaptchaSecret);
@@ -123,8 +136,8 @@ class AuthController {
     async changePassword(req, res, next) {
         try {
             const body = { ...req.body };
-            if (body.oldPassword) body.oldPassword = tryDecodeBase64(body.oldPassword);
-            if (body.newPassword) body.newPassword = tryDecodeBase64(body.newPassword);
+            if (body.oldPassword) body.oldPassword = tryDecrypt(body.oldPassword);
+            if (body.newPassword) body.newPassword = tryDecrypt(body.newPassword);
             const result = await this.authService.changePassword(req.user.id, body);
             res.status(200).json({
                 success: true,
