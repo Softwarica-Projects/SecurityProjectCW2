@@ -238,6 +238,81 @@ class AuthService {
         const { password: _, ...userWithoutPassword } = user.toObject();
         return userWithoutPassword;
     }
+    async updateUserProfile(userId, profileData, imagePath = null) {
+        const { name, email } = profileData;
+
+        const user = await this.userRepository.findById(userId);
+        if (!user) {
+            throw new NotFoundException('User', userId);
+        }
+
+        const updateData = {};
+
+        if (name !== undefined) {
+            this.validateName(name);
+            updateData.name = name.trim();
+        }
+
+        if (email !== undefined) {
+            this.validateEmail(email);
+            const normalizedEmail = email.toLowerCase();
+            
+            if (normalizedEmail !== user.email) {
+                const existingUser = await this.userRepository.findByEmailExcludingId(normalizedEmail, userId);
+                if (existingUser) {
+                    throw new ConflictException('Email already exists');
+                }
+            }
+            updateData.email = normalizedEmail;
+        }
+
+        if (imagePath) {
+            updateData.image = imagePath;
+        }
+
+        await this.userRepository.updateById(userId, updateData);
+
+        return { message: 'Profile updated successfully' };
+    }
+
+    async getFavoriteMovies(userId) {
+        const user = await this.userRepository.getUserWithFavorites(userId);
+        if (!user) {
+            throw new NotFoundException('User', userId);
+        }
+
+        return user.favourites;
+    }
+
+    async addToFavorites(userId, movieId) {
+        const user = await this.userRepository.findById(userId);
+        if (!user) {
+            throw new NotFoundException('User', userId);
+        }
+
+        await this.userRepository.addToFavorites(userId, movieId);
+        return { message: 'Movie added to favorites' };
+    }
+
+    async removeFromFavorites(userId, movieId) {
+        const user = await this.userRepository.findById(userId);
+        if (!user) {
+            throw new NotFoundException('User', userId);
+        }
+
+        await this.userRepository.removeFromFavorites(userId, movieId);
+        return { message: 'Movie removed from favorites' };
+    }
+
+    async getUserStats(userId) {
+        const user = await this.userRepository.findById(userId);
+        if (!user) {
+            throw new NotFoundException('User', userId);
+        }
+
+        return await this.userRepository.getUserStats(userId);
+    }
 }
 
 module.exports = AuthService;
+
