@@ -1,6 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const authRoutes = require('./routes/authRoutes');
+const utilityRoutes = require('./routes/utilityRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const genreRoutes = require('./routes/genreRoutes');
+const generalRoutes = require('./routes/generalRoutes');
 const path = require('path');
 const connectDB = require('./config/db');
 const app = express();
@@ -79,6 +83,10 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 //Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/utility', utilityRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/genres', genreRoutes);
+app.use('/api/general', generalRoutes);
 
 const errorHandler = require('./middlewares/errorHandler');
 app.use(errorHandler);
