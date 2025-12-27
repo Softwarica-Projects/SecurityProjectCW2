@@ -5,6 +5,34 @@ const connectDB = require('./config/db');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+//Request Logger Setup 
+
+const fs = require('fs');
+const bunyan = require('bunyan');
+const expressRequestsLogger = require('express-requests-logger');
+const logsDir = path.join(__dirname, '../logs');
+const activityLogPath = path.join(logsDir, 'activity.log');
+try { fs.mkdirSync(logsDir, { recursive: true }); } catch (e) { }
+
+const bunyanLogger = bunyan.createLogger({
+    name: 'ExpressLogger',
+    streams: [
+        { path: activityLogPath, level: 'info' }
+    ]
+});
+
+app.use(expressRequestsLogger({
+    logger: bunyanLogger,
+    request: {
+        audit: true,
+        maskBody: ['password', 'oldPassword', 'newPassword', 'token', 'authorization'],
+        maskHeaders: ['authorization'],
+        maskQuery: []
+    },
+    response: { audit: true },
+    doubleAudit: false
+}));
+
 
 // Serve uploads folder statically
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
