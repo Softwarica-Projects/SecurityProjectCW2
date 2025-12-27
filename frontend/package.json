@@ -20,8 +20,11 @@
     "react-select": "^5.10.1",
     "react-toastify": "^11.0.5",
     "react-youtube": "^10.1.0",
+    "read-more-react": "^1.0.10",
+    "read-smore": "^2.0.4",
     "sass": "^1.87.0",
-    "tailwind-scrollbar-hide": "^1.1.7"
+    "tailwind-scrollbar-hide": "^1.1.7",
+    "@stripe/stripe-js": "^2.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

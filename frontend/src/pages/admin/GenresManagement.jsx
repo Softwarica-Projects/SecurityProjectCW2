@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getGenres, createGenre, deleteGenre, updateGenre } from '../../services/genreService';
-import { Table, Button, Modal, Form, Container } from 'react-bootstrap';
+import { Button, Modal, Form } from 'react-bootstrap';
 import AdminLayout from '../../layout/AdminLayout';
 import { FaTrash } from 'react-icons/fa';
 import { CiEdit } from 'react-icons/ci';
@@ -71,59 +71,33 @@ const GenresManagement = () => {
 
     return (
         <AdminLayout>
-            <Container>
-                <h3 className="my-4 d-flex align-items-center justify-content-between">
-                    Manage Genres
-                    <Button variant="primary" onClick={() => setShowModal(true)}>
-                        Add New Genre
-                    </Button>
-                </h3>
-                <Table striped bordered hover >
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Image</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {genres.map(genre => (
-                            <tr key={genre._id}>
-                                <td>{genre.name}</td>
-                                <td>
-                                    {genre.image && (
-                                        <a href={genre.image.startsWith('http') ? genre.image : `${window.location.origin}${genre.image}`} target="_blank" rel="noopener noreferrer">
-                                            <img
-                                                src={genre.image.startsWith('http') ? genre.image : `${window.location.origin}${genre.image}`}
-                                                alt={genre.name}
-                                                style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 4 }}
-                                            />
-                                        </a>
-                                    )}
-                                </td>
-                                <td>
-                                    <span
-                                        style={{ cursor: 'pointer', color: '#ffc107', marginRight: 16 }}
-                                        title="Edit"
-                                        onClick={() => {
-                                            setNewGenre({ name: genre.name, image: null, _id: genre._id });
-                                            setShowModal(true);
-                                        }}
-                                    >
-                                        <CiEdit size={20} />
-                                    </span>
-                                    <span
-                                        style={{ cursor: 'pointer', color: '#dc3545' }}
-                                        title="Delete"
-                                        onClick={() => handleDelete(genre._id)}
-                                    >
-                                        <FaTrash size={20} />
-                                    </span>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
+            <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-semibold">Manage Genres</h3>
+                    <Button variant="primary" onClick={() => setShowModal(true)}>Add New Genre</Button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {genres.map(genre => (
+                        <div key={genre._id} className="bg-white rounded-lg shadow-sm p-4 flex flex-col items-center text-center">
+                            {genre.image ? (
+                                <a href={genre.image.startsWith('http') ? genre.image : `${window.location.origin}${genre.image}`} target="_blank" rel="noopener noreferrer">
+                                    <img src={genre.image.startsWith('http') ? genre.image : `${window.location.origin}${genre.image}`} alt={genre.name} className="w-24 h-24 object-cover rounded-md mb-3" />
+                                </a>
+                            ) : (
+                                <div className="w-24 h-24 bg-gray-100 rounded-md mb-3 flex items-center justify-center text-gray-400">No Image</div>
+                            )}
+                            <div className="font-semibold mb-2">{genre.name}</div>
+                            <div className="flex items-center gap-3">
+                                <CiEdit size={20} className="text-yellow-500 cursor-pointer" onClick={() => {
+                                    setNewGenre({ name: genre.name, image: null, _id: genre._id });
+                                    setShowModal(true);
+                                }} />
+                                <FaTrash size={18} className="text-red-500 cursor-pointer" onClick={() => handleDelete(genre._id)} />
+                            </div>
+                        </div>
+                    ))}
+                </div>
 
                 <Modal show={showModal} onHide={() => setShowModal(false)}>
                     <Form onSubmit={(e) => {
@@ -164,7 +138,7 @@ const GenresManagement = () => {
                         </Modal.Footer>
                     </Form>
                 </Modal>
-            </Container>
+            </div>
         </AdminLayout>
     );
 };

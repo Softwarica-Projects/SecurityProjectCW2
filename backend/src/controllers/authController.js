@@ -1,6 +1,4 @@
 const AuthService = require('../services/AuthService');
-const nodemailer = require('nodemailer');
-
 function tryDecodeBase64(value) {
     if (!value || typeof value !== 'string') return value;
     try {
