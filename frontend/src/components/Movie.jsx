@@ -20,7 +20,7 @@ const Movie = ({ movie, showRating = true }) => {
         onClick={handleClick}
       />
       <div onClick={handleClick} className="absolute top-0 left-0 w-full h-full bg-black/40 hover:opacity-100 text-white px-5">
-        {movie.isPurchased && (<div className="absolute top-8 left-8"><Tag color="bg-indigo-600">Purchased</Tag></div>)}
+        {movie.isPurchased && (<div className="absolute top-8 left-8"><Tag color="bg-primary-600">Purchased</Tag></div>)}
         <div className="absolute top-8 right-8">
           {showRating ? (
             <div className="flex flex-row justify-center items-center text-orange-400">

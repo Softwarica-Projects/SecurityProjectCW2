@@ -10,7 +10,7 @@ const MovieCard = ({ movie, onClick, title = "Featured Movie" }) => {
             <div className="relative">
                 {movie.purchased && (
                     <div className="absolute top-0 left-0 m-2 z-10">
-                        <Tag color="bg-indigo-600">Purchased</Tag>
+                        <Tag color="bg-primary-600">Purchased</Tag>
                     </div>
                 )}
                 <div

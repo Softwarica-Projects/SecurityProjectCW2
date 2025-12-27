@@ -1,4 +1,4 @@
-import { Container, Nav, Navbar } from 'react-bootstrap';
+import { Container, Nav, Navbar, Dropdown } from 'react-bootstrap';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
@@ -23,8 +23,8 @@ const AdminLayout = ({ children }) => {
     <div className="flex h-screen bg-gray-50">
       <aside className="w-56 bg-slate-900 text-slate-200 flex flex-col p-4">
         <div className="mb-6">
-          <Link to="/admin/" className="flex items-center gap-3">
-            <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-indigo-600 to-teal-400 text-white font-bold">MV</span>
+            <Link to="/admin/" className="flex items-center gap-3">
+            <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-primary-600 to-teal-400 text-white font-bold">MV</span>
             <span className="text-lg font-semibold">MovieVault</span>
           </Link>
         </div>
@@ -43,10 +43,6 @@ const AdminLayout = ({ children }) => {
             ))}
           </ul>
         </nav>
-
-        <div className="pt-4">
-          <button onClick={handleLogout} className="w-full text-left px-3 py-2 rounded-md bg-transparent border border-slate-700 text-slate-200">Logout</button>
-        </div>
       </aside>
 
       <div className="flex-1 flex flex-col overflow-visible">
@@ -55,8 +51,14 @@ const AdminLayout = ({ children }) => {
             <h4 className="text-lg font-semibold">{userName || 'Admin'}</h4>
           </div>
           <div className="flex items-center gap-4">
-            <input className="px-3 py-2 rounded-md border" placeholder="Search..." />
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-teal-400 to-indigo-600 text-white flex items-center justify-center font-semibold">{(userName || 'A').charAt(0)}</div>
+            <Dropdown align="end">
+                <Dropdown.Toggle id="admin-avatar-toggle" className="p-0 bg-transparent border-0">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-teal-400 to-primary-600 text-white flex items-center justify-center font-semibold">{(userName || 'A').charAt(0)}</div>
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
         </header>
 

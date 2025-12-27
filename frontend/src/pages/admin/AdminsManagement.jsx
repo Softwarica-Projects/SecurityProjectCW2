@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getAllUser, createAdmin, deleteAdmin } from '../../services/adminService';
-import { Table, Button, Modal, Form, Container } from 'react-bootstrap';
+import { Button, Modal, Form, Container } from 'react-bootstrap';
+import DataTable from 'react-data-table-component';
 import AdminLayout from '../../layout/AdminLayout';
 import { FaTrash, FaEdit } from 'react-icons/fa';
 import { handleError, handleSuccess } from '../../utils/toastUtils';
@@ -20,6 +21,58 @@ const AdminsManagement = () => {
     useEffect(() => {
         fetchUsers();
     }, []);
+
+    const [filterText, setFilterText] = useState('');
+
+    const columns = [
+        {
+            name: 'Name',
+            selector: row => row.name,
+            sortable: true,
+            wrap: true,
+        },
+        {
+            name: 'Role',
+            selector: row => row.role.charAt(0).toUpperCase() + row.role.slice(1),
+            sortable: true,
+            width: '120px'
+        },
+        {
+            name: 'Email',
+            selector: row => row.email,
+            sortable: true,
+            wrap: true
+        },
+        {
+            name: 'Created Date',
+            selector: row => row.createdAt ? new Date(row.createdAt).toLocaleDateString() : '',
+            sortable: true,
+            width: '140px'
+        },
+        {
+            name: 'Actions',
+            cell: row => (
+                row.role === 'admin' ? (
+                    <div className="flex items-center gap-2">
+                        {(row._id !== currentUserId && <FaTrash className="text-red-500 cursor-pointer" onClick={() => handleDelete(row._id)} />)}
+                    </div>
+                ) : null
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+            width: '140px'
+        }
+    ];
+
+    const filteredUsers = users.filter(u => {
+        const search = filterText.toLowerCase();
+        return (
+            u.name.toLowerCase().includes(search) ||
+            u.email.toLowerCase().includes(search) ||
+            u.role.toLowerCase().includes(search)
+        );
+    });
 
     const handleCreate = async () => {
         try {
@@ -69,47 +122,27 @@ const AdminsManagement = () => {
                     </Button>
                 </h3>
 
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Role</th>
-                            <th>Email</th>
-                            <th>Created Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Array.isArray(users) && users.map(admin => (
-                            <tr key={admin._id}>
-                                <td>{admin.name}</td>
-                                <td>{admin.role.charAt(0).toUpperCase() + admin.role.slice(1)}</td>
-                                <td>{admin.email}</td>
-                                <td>{admin.createdAt ? new Date(admin.createdAt).toLocaleDateString() : ''}</td>
-                                <td>
-                                    {admin.role === 'admin' && (
-                                        <>
-                                            <span
-                                                style={{ cursor: 'pointer', color: '#ffc107', marginRight: 16 }}
-                                                title="Edit"
-                                            >
-                                                <FaEdit size={18} />
-                                            </span>
-                                            {(admin._id !== currentUserId &&
-                                                <span
-                                                    style={{ cursor: 'pointer', color: '#dc3545' }}
-                                                    title="Delete"
-                                                    onClick={() => handleDelete(admin._id)}
-                                                >
-                                                    <FaTrash size={18} />
-                                                </span>
-                                            )}
-                                        </>)}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                <div className="bg-white rounded-lg shadow-sm p-4">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="text"
+                                placeholder="Search users..."
+                                className="border px-3 py-2 rounded"
+                                onChange={(e) => setFilterText(e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    <DataTable
+                        columns={columns}
+                        data={filteredUsers}
+                        pagination
+                        highlightOnHover
+                        responsive
+                        defaultSortFieldId={1}
+                    />
+                </div>
 
                 <Modal show={showModal} onHide={() => setShowModal(false)}>
                     <Modal.Header closeButton>
