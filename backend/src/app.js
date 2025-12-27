@@ -5,6 +5,7 @@ const utilityRoutes = require('./routes/utilityRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const genreRoutes = require('./routes/genreRoutes');
 const generalRoutes = require('./routes/generalRoutes');
+const movieRoutes = require('./routes/movieRoutes');
 const path = require('path');
 const connectDB = require('./config/db');
 const app = express();
@@ -87,6 +88,7 @@ app.use('/api/utility', utilityRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/genres', genreRoutes);
 app.use('/api/general', generalRoutes);
+app.use('/api/movies', movieRoutes);
 
 const errorHandler = require('./middlewares/errorHandler');
 app.use(errorHandler);
