@@ -5,9 +5,11 @@ const connectDB = require('./config/db');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-
+app.use(express.json());
 //CORS SETUP
 const cors = require('cors');
+const rawOrigins = process.env.CORS_ORIGIN;
+const allowedOrigins = rawOrigins.split(',').map(s => s.trim()).filter(Boolean);
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
@@ -70,5 +72,4 @@ connectDB();
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-    console.log(`Swagger docs available at http://localhost:${PORT}/api-docs`);
 });
