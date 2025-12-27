@@ -8,6 +8,9 @@ const PORT = process.env.PORT || 5000;
 
 // Serve uploads folder statically
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+const errorHandler = require('./middlewares/errorHandler');
+app.use(errorHandler);
 // Database connection
 connectDB();
 
