@@ -12,6 +12,7 @@ router.post('/login', authLimiter, authController.loginUser);
 router.post('/change-password', authenticateToken, authLimiter, authController.changePassword);
 
 router.get('/me', authenticateToken, authLimiter,authController.getMe);
+router.get('/stats', authenticateToken, authLimiter,authController.getUserStats);
 
 
 module.exports = router;
