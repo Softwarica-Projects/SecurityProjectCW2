@@ -243,7 +243,7 @@ class MovieController {
             const transaction = await this.paymentService.verifyTransaction(movieId, sessionId, userId);
             return res.status(200).json({ success: true, transaction });
         } catch (error) {
-            next(error);
+             res.status(400).json({ success: false, message: error.message });
         }
     }
 

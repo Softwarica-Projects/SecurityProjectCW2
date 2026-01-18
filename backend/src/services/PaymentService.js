@@ -17,12 +17,11 @@ class PaymentService {
         if (!movie) throw new NotFoundException('Movie', movieId);
         // avoid creating duplicate transaction for same session
         const existing = await this.transactionRepository.findBySessionId(sessionId);
-        if (existing) return existing;
+        if (existing) throw new Error("This Payment has already been processed.");
         const session = await this.stripe.checkout.sessions.retrieve(
             sessionId,
             { expand: ["payment_intent"] }
         );
-
         if (!session.payment_intent) {
             throw new ValidationException("No payment found");
         }

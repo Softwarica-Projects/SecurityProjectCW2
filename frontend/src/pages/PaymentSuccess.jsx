@@ -49,9 +49,11 @@ const PaymentSuccess = () => {
         <PublicLayout>
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-white text-center">
-                    <h1 className="text-3xl font-bold mb-4">Payment Successful</h1>
-                    <p className="mb-4">{loading ? 'Verifying your payment...' : message}</p>
-                        <button className="bg-cyan-600 py-2 px-4 rounded" onClick={() => navigate('/')}>Go Home</button>
+                    <h1 className={`text-3xl font-bold mb-4 ${status === 'error' || status === 'failed' ? 'text-red-500' : status === 'verified' ? 'text-green-500' : ''}`}>
+                        {loading ? 'Verifying...' : `${status === 'error' || status === 'failed' ? 'Verification Failed' : status === 'verified' ? 'Payment Verified' : ''}`}
+                    </h1>
+                    <p className="mb-4 text-white">{loading ? 'Verifying your payment...' : message}</p>
+                    <button className="bg-cyan-600 py-2 px-4 rounded" onClick={() => navigate('/')}>Go Home</button>
                 </div>
             </div>
         </PublicLayout>

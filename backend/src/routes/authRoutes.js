@@ -13,6 +13,6 @@ router.post('/change-password', authenticateToken, authLimiter, authController.c
 
 router.get('/me', authenticateToken, authLimiter,authController.getMe);
 router.get('/stats', authenticateToken, authLimiter,authController.getUserStats);
-
+router.get('/favorites', authenticateToken, authLimiter,authController.getFavoriteMovies);
 
 module.exports = router;
